@@ -15,7 +15,7 @@ public class JFrameImagen extends JFrame {
 
 
         setTitle("Imagen");
-        setSize(800, 800);
+        setSize(700, 800);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(true);
