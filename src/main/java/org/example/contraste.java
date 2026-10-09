@@ -5,16 +5,17 @@ import java.awt.image.BufferedImage;
 
 public class contraste {
     static void main() {
-        Image imagenjeje = HerramientasImagen.abrirImagen();
-        BufferedImage bi = HerramientasImagen.toBufferedImage(imagenjeje);
+        BufferedImage bi = HerramientasImagen.toBufferedImage(HerramientasImagen.abrirImagen());
         BufferedImage bi_gs = HerramientasImagen.RGB2GS(bi);
+
         new JFrameImagen(bi_gs);
         new JFrameImagen(HerramientasImagen.crearHistograma(bi_gs, 0));
 
-        Image im2 = HerramientasImagen.abrirImagen();
-        BufferedImage bi2 = HerramientasImagen.toBufferedImage(im2);
-        BufferedImage bi_gs_2 = HerramientasImagen.RGB2GS(bi2);
-        new JFrameImagen(bi_gs_2);
-        new JFrameImagen(HerramientasImagen.crearHistograma(bi_gs_2, 0));
+        BufferedImage bi2 = HerramientasImagen.expansionLineal(bi_gs);
+        new JFrameImagen(HerramientasImagen.toImage(bi2));
+        new JFrameImagen(HerramientasImagen.crearHistograma(bi2, 0));
+
+        new JFrameImagen(HerramientasImagen.toImage(HerramientasImagen.umbral(bi2, 100)));
     }
+
 }

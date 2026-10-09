@@ -91,8 +91,6 @@ public class HerramientasImagen {
     }
 
     public static BufferedImage crearHistograma(BufferedImage imagen, int canal) {
-        if (imagen == null) return null;
-
         int[] datos = new int[256];
 
         for (int x = 0; x < imagen.getWidth(); x++) {
@@ -138,5 +136,70 @@ public class HerramientasImagen {
         }
 
         return imgHistograma;
+    }
+
+    public static BufferedImage expansionLineal(BufferedImage bi) {
+        int w = bi.getWidth();
+        int h = bi.getHeight();
+
+        int min = 255;
+        int max = 0;
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                //[Alpha][Rojo][Verde][Azul]
+                //al desplazar 16 bits, 2 bytes
+                //[Nada][Nada][Alpha][Rojo]
+                //Despues de la mascara 0xFF = 255 = 0000 1111
+                //[Nada][Nada][Nada][Rojo}
+                int valor = (bi.getRGB(x, y) >> 16) & 0xFF;
+
+                if (valor < min) min = valor;
+                if (valor > max) max = valor;
+            }
+        }
+
+        // Si la imagen es totalmente plana (min == max) no se puede expandir
+        if (max == min) {
+            return bi;
+        }
+
+        BufferedImage resultado = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                int valorOriginal = (bi.getRGB(x, y) >> 16) & 0xFF;
+
+                // Mapeo lineal al rango [0, 255]
+                int nuevoValor = (int) (((double) (valorOriginal - min) / (max - min)) * 255);
+
+                // Reconstruir el color en formato ARGB de 32 bits
+                int pixelGris = (0xFF << 24) | (nuevoValor << 16) | (nuevoValor << 8) | nuevoValor;
+                resultado.setRGB(x, y, pixelGris);
+            }
+        }
+
+        return resultado;
+    }
+
+    public static BufferedImage umbral(BufferedImage bi, int u) {
+        int w = bi.getWidth();
+        int h = bi.getHeight();
+
+        BufferedImage im = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                Color colorPixel = new Color(bi.getRGB(x, y));
+                int valorGris = colorPixel.getRed();
+
+                if (valorGris < u) {
+                    im.setRGB(x, y, Color.BLACK.getRGB());
+                } else {
+                    im.setRGB(x, y, Color.WHITE.getRGB());
+                }
+            }
+        }
+        return im;
     }
 }
