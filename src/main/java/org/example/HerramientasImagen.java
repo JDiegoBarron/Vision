@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.Graphics2D;
 
 /**
  *
@@ -74,22 +75,6 @@ public class HerramientasImagen {
         return bi.getScaledInstance(bi.getWidth(),bi.getHeight(), BufferedImage.TYPE_INT_RGB);
     }
 
-    public static BufferedImage RGB2GS(BufferedImage im) {
-        // Crear una nueva BufferedImage con el mismo tamaño pero en tipo escala de grises
-        BufferedImage grayImage = new BufferedImage(
-                im.getWidth(),
-                im.getHeight(),
-                BufferedImage.TYPE_BYTE_GRAY
-        );
-
-        // Dibujar la imagen original sobre la nueva imagen en grises
-        Graphics g = grayImage.getGraphics();
-        g.drawImage(im, 0, 0, null);
-        g.dispose();
-
-        return grayImage;
-    }
-
     public static BufferedImage crearHistograma(BufferedImage imagen, int canal) {
         int[] datos = new int[256];
 
@@ -136,6 +121,23 @@ public class HerramientasImagen {
         }
 
         return imgHistograma;
+    }
+
+
+    public static BufferedImage RGB2GS(BufferedImage im) {
+        // Crear una nueva BufferedImage con el mismo tamaño pero en tipo escala de grises
+        BufferedImage grayImage = new BufferedImage(
+                im.getWidth(),
+                im.getHeight(),
+                BufferedImage.TYPE_BYTE_GRAY
+        );
+
+        // Dibujar la imagen original sobre la nueva imagen en grises
+        Graphics g = grayImage.getGraphics();
+        g.drawImage(im, 0, 0, null);
+        g.dispose();
+
+        return grayImage;
     }
 
     public static BufferedImage expansionLineal(BufferedImage bi) {
@@ -201,5 +203,183 @@ public class HerramientasImagen {
             }
         }
         return im;
+    }
+
+    public static BufferedImage or(BufferedImage im1, BufferedImage im2){
+        int w = im1.getWidth();
+        int h = im1.getHeight();
+
+        BufferedImage im = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                Color c1 = new Color(im1.getRGB(x, y));
+                int v1 = c1.getRed();
+
+                Color c2 = new Color(im2.getRGB(x, y));
+                int v2 = c2.getRed();//obtiene los dos colores 0 o 255
+
+                if(v1 == 255 || v2 == 255) {
+                    im.setRGB(x, y, Color.WHITE.getRGB());
+                } else {
+                    im.setRGB(x, y, Color.BLACK.getRGB());
+                }
+            }
+        }
+        return im;
+    }
+
+    public static BufferedImage and(BufferedImage im1, BufferedImage im2){
+        int w = im1.getWidth();
+        int h = im1.getHeight();
+
+        BufferedImage im = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                Color c1 = new Color(im1.getRGB(x, y));
+                int v1 = c1.getRed();
+
+                Color c2 = new Color(im2.getRGB(x, y));
+                int v2 = c2.getRed();//obtiene los dos colores 0 o 255
+
+                if(v1 == 255 && v2 == 255) {
+                    im.setRGB(x, y, Color.WHITE.getRGB());
+                } else {
+                    im.setRGB(x, y, Color.BLACK.getRGB());
+                }
+            }
+        }
+        return im;
+    }
+
+    public static BufferedImage not(BufferedImage im1){
+        int w = im1.getWidth();
+        int h = im1.getHeight();
+
+        BufferedImage im = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                Color c1 = new Color(im1.getRGB(x, y));
+                int v1 = c1.getRed();
+
+                if(v1 == 255){
+                    im.setRGB(x, y, Color.BLACK.getRGB());
+                }
+                else{
+                    im.setRGB(x, y, Color.WHITE.getRGB());
+                }
+            }
+        }
+        return im;
+    }
+
+    public static BufferedImage nand(BufferedImage im1, BufferedImage im2){
+        int w = im1.getWidth();
+        int h = im1.getHeight();
+
+        BufferedImage im = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                Color c1 = new Color(im1.getRGB(x, y));
+                int v1 = c1.getRed();
+
+                Color c2 = new Color(im2.getRGB(x, y));
+                int v2 = c2.getRed();//obtiene los dos colores 0 o 255
+
+                if(v1 == 255 || v2 == 255) {
+                    im.setRGB(x, y, Color.BLACK.getRGB());
+                } else {
+                    im.setRGB(x, y, Color.WHITE.getRGB());
+                }
+            }
+        }
+        return im;
+    }
+
+    public static BufferedImage nor(BufferedImage im1, BufferedImage im2){
+        int w = im1.getWidth();
+        int h = im1.getHeight();
+
+        BufferedImage im = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                Color c1 = new Color(im1.getRGB(x, y));
+                int v1 = c1.getRed();
+
+                Color c2 = new Color(im2.getRGB(x, y));
+                int v2 = c2.getRed();//obtiene los dos colores 0 o 255
+
+                if(v1 == 255 && v2 == 255) {
+                    im.setRGB(x, y, Color.BLACK.getRGB());
+                } else {
+                    im.setRGB(x, y, Color.WHITE.getRGB());
+                }
+            }
+        }
+        return im;
+    }
+
+    public static BufferedImage xor(BufferedImage im1, BufferedImage im2){
+        int w = im1.getWidth();
+        int h = im1.getHeight();
+
+        BufferedImage im = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                Color c1 = new Color(im1.getRGB(x, y));
+                int v1 = c1.getRed();
+
+                Color c2 = new Color(im2.getRGB(x, y));
+                int v2 = c2.getRed();//obtiene los dos colores 0 o 255
+
+                if(v1 == 255 && v2 == 0) {
+                    im.setRGB(x, y, Color.WHITE.getRGB());
+                }
+                else if(v1 == 0 && v2 == 255){
+                    im.setRGB(x, y, Color.WHITE.getRGB());
+                }
+                else {
+                    im.setRGB(x, y, Color.BLACK.getRGB());
+                }
+            }
+        }
+        return im;
+    }
+
+
+    public static BufferedImage trasladar(BufferedImage bi, int i, int j) {
+        int w = bi.getWidth();
+        int h = bi.getHeight();
+
+        BufferedImage resultado = new BufferedImage(w, h, bi.getType());
+
+        Graphics2D g2d = resultado.createGraphics();
+
+        g2d.drawImage(bi, i, j, null);
+
+        g2d.dispose();
+
+        return resultado;
+    }
+
+    public static BufferedImage rotar(BufferedImage bi, double anguloGrados) {
+        int w = bi.getWidth();
+        int h = bi.getHeight();
+
+        BufferedImage resultado = new BufferedImage(w, h, bi.getType());
+        Graphics2D g2d = resultado.createGraphics();
+
+        g2d.rotate(Math.toRadians(anguloGrados), 0, 0);
+
+        g2d.drawImage(bi, 0, 0, null);
+
+        g2d.dispose();
+
+        return resultado;
     }
 }
